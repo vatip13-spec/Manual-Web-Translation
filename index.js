@@ -155,6 +155,28 @@
         }
     }
 
+    function makeSettingsToggle(container) {
+        const panel = document.createElement('div');
+        panel.id = 'mwt-settings';
+        panel.className = 'extension_container';
+        panel.innerHTML = `
+            <div class="inline-drawer">
+                <div class="inline-drawer-toggle inline-drawer-header">
+                    <b>공홈 번역 덮어보기</b>
+                    <div class="fa-solid fa-circle-chevron-down inline-drawer-icon down" aria-hidden="true"></div>
+                </div>
+                <div class="inline-drawer-content">
+                    <label class="checkbox_label" for="mwt-enabled">
+                        <input type="checkbox" id="mwt-enabled">
+                        <span>사용하기</span>
+                    </label>
+                    <small>끄면 말풍선의 확장 버튼이 숨겨집니다. 적용한 번역문은 채팅에 남습니다.</small>
+                </div>
+            </div>`;
+        container.append(panel);
+        return panel.querySelector('#mwt-enabled');
+    }
+
     function makeEditor() {
         const dialog = document.createElement('dialog');
         dialog.className = 'mwt-dialog';
@@ -295,6 +317,8 @@
 
         const extensionSettings = context.extensionSettings ?? {};
         const settings = (extensionSettings.manualWebTranslation ??= {});
+        const settingsContainer = document.querySelector('#extensions_settings2')
+            ?? document.querySelector('#extensions_settings');
         const dialog = makeEditor();
         const original = dialog.querySelector('.mwt-original');
         const prompt = dialog.querySelector('#mwt-prompt');
@@ -309,6 +333,7 @@
         let saving = false;
 
         function refreshMessage(index, redraw = false) {
+            if (settings.enabled === false) return;
             const current = getContext();
             const node = findMessage(index);
             const message = current.chat[index];
@@ -320,12 +345,39 @@
         }
 
         function refreshChat() {
+            if (settings.enabled === false) return;
             const messages = getContext().chat;
             for (const node of chat.querySelectorAll(':scope > .mes[mesid]')) {
                 const index = Number(node.getAttribute('mesid'));
                 const showOriginal = node.querySelector('.mwt-toggle')?.dataset.original === 'true';
                 syncControls(node, messages[index], showOriginal);
             }
+        }
+
+        if (settingsContainer) {
+            const enabled = makeSettingsToggle(settingsContainer);
+            enabled.checked = settings.enabled !== false;
+            enabled.addEventListener('change', () => {
+                settings.enabled = enabled.checked;
+                context.saveSettingsDebounced?.();
+                if (enabled.checked) {
+                    refreshChat();
+                    return;
+                }
+
+                if (dialog.open) dialog.close();
+                const current = getContext();
+                for (const node of chat.querySelectorAll(':scope > .mes[mesid]')) {
+                    const toggle = node.querySelector('.mwt-toggle');
+                    const index = Number(node.getAttribute('mesid'));
+                    const message = current.chat[index];
+                    if (toggle?.dataset.original === 'true' && hasTranslation(message) && !node.querySelector('.edit_textarea')) {
+                        renderMessage(current, index, message);
+                    }
+                    toggle?.remove();
+                    node.querySelector('.mwt-edit')?.remove();
+                }
+            });
         }
 
         function openEditor(current, index, message, button) {
@@ -356,6 +408,7 @@
         glossarySection.addEventListener('toggle', repositionEditor);
 
         chat.addEventListener('click', (event) => {
+            if (settings.enabled === false) return;
             const button = event.target.closest('.mwt-edit, .mwt-toggle');
             const node = button?.closest('.mes[mesid]');
             if (!node || node.querySelector('.edit_textarea')) return;
@@ -430,7 +483,7 @@
         });
 
         async function saveTranslation(value) {
-            if (saving || !target) return;
+            if (settings.enabled === false || saving || !target) return;
             const current = getContext();
             const { index, message } = target;
             if (current.getCurrentChatId() !== target.chatId || current.groupId !== target.groupId
