@@ -1,0 +1,251 @@
+#chat .mwt-edit {
+    display: inline-flex;
+    flex: 0 0 auto;
+    align-self: center;
+    align-items: center;
+    justify-content: center;
+    background: rgb(128 128 128 / 12%);
+    border: 1px solid var(--SmartThemeBorderColor, #666);
+    border-radius: 0.35rem;
+    color: inherit;
+    cursor: pointer;
+    inline-size: 1.7rem;
+    block-size: 1.7rem;
+    margin-inline: 0.4rem 0.25rem;
+    padding: 0;
+}
+
+#chat .mwt-edit:hover {
+    background: rgb(128 128 128 / 28%);
+}
+
+#chat .mwt-edit .mwt-icon,
+.mwt-dialog .mwt-icon {
+    display: block;
+    flex: none;
+    width: 1rem;
+    height: 1rem;
+    fill: none;
+    stroke: currentColor;
+    stroke-width: 1.75;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+    pointer-events: none;
+}
+
+#chat .mwt-toggle {
+    appearance: none;
+    background: transparent;
+    border: 0;
+    color: inherit;
+    cursor: pointer;
+    font: inherit;
+    font-size: 0.78em;
+    opacity: 0.8;
+    padding: 0.35em 0;
+    text-decoration: underline;
+    text-underline-offset: 0.16em;
+}
+
+#chat .mes:has(.edit_textarea) :is(.mwt-edit, .mwt-toggle) {
+    display: none;
+}
+
+.mwt-dialog {
+    color: var(--SmartThemeBodyColor, #eee);
+    background: var(--SmartThemeBlurTintColor, #26262a);
+    background-color: color-mix(in srgb, var(--SmartThemeBlurTintColor, #26262a), #151518 25%);
+    border: 1px solid var(--SmartThemeBorderColor, #666);
+    border-radius: 0.65rem;
+    box-sizing: border-box;
+    padding: 1rem;
+    width: min(35rem, calc(100vw - 1.5rem));
+    max-height: 86dvh;
+    overflow: auto;
+    backdrop-filter: blur(14px);
+}
+
+.mwt-dialog::backdrop {
+    background: rgb(0 0 0 / 55%);
+}
+
+.mwt-dialog.mwt-anchored {
+    position: fixed;
+    inset: var(--mwt-top, auto) auto var(--mwt-bottom, auto) var(--mwt-left, 0);
+    margin: 0;
+    max-height: min(86dvh, var(--mwt-height, 86dvh));
+}
+
+.mwt-form {
+    display: flex;
+    flex-direction: column;
+    gap: 0.65rem;
+}
+
+.mwt-header,
+.mwt-prompt-heading,
+.mwt-actions {
+    display: flex;
+    align-items: center;
+    gap: 0.45rem;
+    flex-wrap: wrap;
+}
+
+.mwt-header,
+.mwt-prompt-heading {
+    justify-content: space-between;
+}
+
+.mwt-header h3 {
+    margin: 0;
+    min-inline-size: 0;
+}
+
+.mwt-header {
+    flex-wrap: nowrap;
+}
+
+.mwt-header-actions,
+.mwt-site-links {
+    display: flex;
+    align-items: center;
+    gap: 0.2rem;
+}
+
+.mwt-header-actions {
+    flex: 0 0 auto;
+    margin-inline-start: auto;
+    gap: 0.35rem;
+}
+
+.mwt-dialog .mwt-site-link {
+    display: grid;
+    place-items: center;
+    inline-size: 1.6rem;
+    block-size: 1.6rem;
+    color: inherit;
+    border-radius: 0.3rem;
+}
+
+.mwt-dialog .mwt-site-link:hover,
+.mwt-dialog .mwt-site-link:focus-visible {
+    background: rgb(128 128 128 / 22%);
+}
+
+.mwt-site-link::before {
+    content: '';
+    inline-size: 1rem;
+    block-size: 1rem;
+    background: var(--mwt-site-icon) center / contain no-repeat;
+}
+
+.mwt-chatgpt::before {
+    background: currentColor;
+    mask: url("./icons/openai.svg") center / contain no-repeat;
+}
+
+.mwt-gemini {
+    --mwt-site-icon: url("./icons/gemini-color.svg");
+}
+
+.mwt-claude {
+    --mwt-site-icon: url("./icons/claude-color.svg");
+}
+
+.mwt-dialog button {
+    font: inherit;
+    color: inherit;
+    background: rgb(128 128 128 / 13%);
+    border: 1px solid var(--SmartThemeBorderColor, #666);
+    border-radius: 0.35rem;
+    padding: 0.35em 0.65em;
+    cursor: pointer;
+}
+
+.mwt-dialog button:hover {
+    background: rgb(128 128 128 / 28%);
+}
+
+.mwt-dialog .mwt-copy-prompt {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.35rem;
+}
+
+.mwt-dialog textarea {
+    box-sizing: border-box;
+    font: inherit;
+    font-size: max(16px, 1em);
+    min-height: 5rem;
+    resize: vertical;
+    width: 100%;
+}
+
+.mwt-dialog #mwt-prompt {
+    min-height: 4rem;
+}
+
+@media (max-width: 719px) {
+    .mwt-dialog {
+        padding: 0.75rem;
+    }
+
+    .mwt-form {
+        gap: 0.5rem;
+    }
+}
+
+.mwt-meta,
+.mwt-help,
+.mwt-status {
+    font-size: 0.85em;
+}
+
+.mwt-status:empty {
+    display: none;
+}
+
+.mwt-dialog details > summary {
+    cursor: pointer;
+}
+
+.mwt-prompt-option {
+    display: flex;
+    align-items: center;
+    gap: 0.4rem;
+    cursor: pointer;
+}
+
+.mwt-prompt-option input {
+    margin: 0;
+}
+
+.mwt-prompt-option small {
+    margin-inline-start: 0.35rem;
+    opacity: 0.8;
+}
+
+.mwt-glossary textarea {
+    margin-block: 0.35rem 0;
+}
+
+.mwt-footer {
+    justify-content: flex-end;
+}
+
+.mwt-footer .mwt-delete {
+    margin-inline-end: auto;
+}
+
+.mwt-footer .mwt-apply {
+    font-weight: 700;
+}
+
+.mwt-dialog .mwt-copy-buffer {
+    position: fixed;
+    opacity: 0;
+    pointer-events: none;
+    width: 1px;
+    height: 1px;
+    min-height: 0;
+}

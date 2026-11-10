@@ -1,0 +1,10 @@
+{
+  "display_name": "공홈 번역 덮어보기",
+  "loading_order": 310,
+  "requires": [],
+  "optional": [],
+  "js": "index.js",
+  "css": "style.css",
+  "author": "Codex",
+  "version": "0.1.9"
+}
